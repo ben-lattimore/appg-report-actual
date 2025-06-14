@@ -28,6 +28,14 @@ function extractFunderName(source) {
   return funderName || 'Unknown Funder';
 }
 
+// Add this helper function after the extractFunderName function
+function roundToNearest1500(value) {
+  if (typeof value !== 'number' || isNaN(value)) {
+    return value;
+  }
+  return Math.round(value / 1500) * 1500;
+}
+
 export async function buildAggregates() {
   // Ensure cache directory exists
   await fs.mkdir(CACHE_DIR, { recursive: true });
@@ -44,6 +52,9 @@ export async function buildAggregates() {
     const content = await fs.readFile(filePath, 'utf8');
     const raw = JSON.parse(content);
     
+    // Round total_benefits_value
+    raw.total_benefits_value = roundToNearest1500(raw.total_benefits_value);
+    
     // Extract year from publication_date (format: "DDMMYY" like "200520" for 20th May 2020)
     let year;
     if (raw.publication_date.match(/^\d{6}$/)) {
@@ -59,10 +70,25 @@ export async function buildAggregates() {
     const funderMap = new Map();
     
     for (const group of raw.appg_groups) {
+      // Round benefits_in_kind values
+      if (group.benefits_in_kind && Array.isArray(group.benefits_in_kind)) {
+        group.benefits_in_kind = group.benefits_in_kind.map(value => roundToNearest1500(value));
+      }
+      
+      // Round total_benefits (this becomes the 'total' field in the output)
+      if (typeof group.total_benefits === 'number') {
+        group.total_benefits = roundToNearest1500(group.total_benefits);
+      }
+      
       for (const benefit of group.benefits_details) {
         // Skip benefits with missing or invalid data
         if (!benefit || !benefit.source || typeof benefit.calculated_value !== 'number') {
           continue;
+        }
+        
+        // Round calculated_value
+        if (typeof benefit.calculated_value === 'number') {
+          benefit.calculated_value = roundToNearest1500(benefit.calculated_value);
         }
         
         const funderName = extractFunderName(benefit.source);
@@ -121,7 +147,7 @@ export async function buildAggregates() {
       .map(g => ({
         name: g.name,
         title: g.title,
-        total: g.total_benefits,
+        total: g.total_benefits, // This will now be rounded
         benefitCount: g.benefits_details.length
       }));
     
@@ -152,7 +178,7 @@ export async function buildAggregates() {
       
       groupMap.get(group.name).yearlyData.push({
         year,
-        totalBenefits: group.total_benefits,
+        totalBenefits: group.total_benefits, // This will also be rounded
         benefitCount: group.benefits_details.length
       });
     }
