@@ -1,13 +1,13 @@
 {
   "scripts": {
     "dev": "next dev",
-    "build": "npm run transform && next build",
-    "transform": "tsx lib/transform.ts",
+    "build": "npm run build-data && next build",
+    "build-data": "node scripts/build-data.mjs",
     "start": "next start",
     "lint": "next lint"
   },
   "dependencies": {
-    "next": "^14.0.0",
+    "next": "^15.0.0",
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "recharts": "^2.8.0",
