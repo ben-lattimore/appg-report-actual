@@ -7,9 +7,9 @@ export default function Navigation() {
   const pathname = usePathname();
 
   const navItems = [
-    { href: '/', label: 'Overview', description: 'Complete dashboard view' },
-    { href: '/appg-funding', label: 'APPG Funding', description: 'Top APPGs by funding amount' },
-    { href: '/top-funders', label: 'Top Funders', description: 'Organizations funding APPGs' },
+    { href: '/' as const, label: 'Overview', description: 'Complete dashboard view' },
+    { href: '/appg-funding' as const, label: 'APPG Funding', description: 'Top APPGs by funding amount' },
+    { href: '/top-funders' as const, label: 'Top Funders', description: 'Organizations funding APPGs' },
   ];
 
   return (
