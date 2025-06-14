@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { notFound } from 'next/navigation';
 
 interface Props {
-  params: { year: string };
+  params: Promise<{ year: string }>;
 }
 
 export async function generateStaticParams() {
@@ -16,15 +16,17 @@ export async function generateStaticParams() {
 }
 
 export async function generateMetadata({ params }: Props) {
+  const { year } = await params;
   return {
-    title: `APPG Benefits ${params.year} - Dashboard`,
-    description: `APPG benefits analysis for ${params.year}`,
+    title: `APPG Benefits ${year} - Dashboard`,
+    description: `APPG benefits analysis for ${year}`,
   };
 }
 
 export default async function YearDetail({ params }: Props) {
+  const { year: yearParam } = await params;
   const data: AggregatedData = await getCachedAggregates();
-  const year = parseInt(params.year);
+  const year = parseInt(yearParam);
   const yearData = data.yearSummaries.find(y => y.year === year);
   
   if (!yearData) {
