@@ -30,12 +30,27 @@ function YearColumn({ year, groups }: YearColumnProps) {
     }).format(amount);
   };
 
+  const getReportDate = (year: number) => {
+    const reportDates: { [key: number]: string } = {
+      2020: '20 May 2020',
+      2021: '2 June 2021',
+      2022: '4 May 2022',
+      2023: '17 May 2023',
+      2024: '30 May 2024',
+      2025: '7 May 2025'
+    };
+    return reportDates[year] || `Report date for ${year}`;
+  };
+
   return (
     <div className="bg-white rounded-lg shadow-md p-6 h-fit">
       <div className="mb-6">
         <h2 className="text-2xl font-bold text-gray-800 mb-2">{year}</h2>
+        <p className="text-sm text-gray-600 mb-1">
+          Report Published: {getReportDate(year)}
+        </p>
         <p className="text-sm text-gray-600">
-          Top {Math.min(displayCount, groups.length)} APPGs by Funding Amount
+          Top APPGs by funding amount
         </p>
       </div>
       
