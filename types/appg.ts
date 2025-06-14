@@ -31,13 +31,33 @@ export interface GroupSummary {
   benefitCount: number;
 }
 
+// New funder-related interfaces
+export interface FunderAPPG {
+  name: string;
+  title: string;
+  amount: number;
+}
+
+export interface FunderSummary {
+  name: string;
+  totalAmount: number;
+  appgCount: number;
+  appgs: FunderAPPG[];
+}
+
+export interface YearFunderSummary {
+  year: number;
+  topFunders: FunderSummary[];
+}
+
 export interface YearSummary {
   year: number;
   totalGroups: number;
   totalValue: number;
   groupsWithBenefits: number;
-  topGroups: GroupSummary[];
+  allGroups: GroupSummary[];
   averageBenefit: number;
+  allFunders: FunderSummary[]; // Add this line
 }
 
 export interface GroupComparison {
@@ -55,6 +75,7 @@ export interface GroupComparison {
 export interface AggregatedData {
   yearSummaries: YearSummary[];
   groupComparisons: GroupComparison[];
+  yearFunderSummaries: YearFunderSummary[]; // Add this line
   overallStats: {
     totalYears: number;
     totalValue: number;

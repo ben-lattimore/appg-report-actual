@@ -1,24 +1,39 @@
 import { AggregatedData } from '@/types/appg';
 import { getCachedAggregates } from '@/lib/data';
 import YearlyFundingColumns from '@/components/YearlyFundingColumns';
+import TopFundersColumns from '@/components/TopFundersColumns';
 
-export default async function Dashboard() {
-  const data: AggregatedData = await getCachedAggregates();
-  
+export default async function Home() {
+  const data = await getCachedAggregates();
+
+  // Transform data to pass allGroups to YearlyFundingColumns
+  const yearSummariesWithAllGroups = data.yearSummaries.map(year => ({
+    year: year.year,
+    allGroups: year.allGroups
+  }));
+
+  // Transform data to pass allFunders to TopFundersColumns  
+  const yearSummariesWithAllFunders = data.yearSummaries.map(year => ({
+    year: year.year,
+    topFunders: year.allFunders // Use allFunders instead of topFunders
+  }));
+
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="mx-auto px-4 py-8">
-        <div className="text-center mb-8">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Top 10 APPGs by Funding Amount per Year
-          </h1>
-          <p className="text-lg text-gray-600">
-            Explore the highest funded All-Party Parliamentary Groups across {data.yearSummaries.length} years
-          </p>
-        </div>
-        
-        <YearlyFundingColumns yearSummaries={data.yearSummaries} />
+    <main className="mx-auto px-4 py-8">
+      <div className="mb-12">
+        <h1 className="text-4xl font-bold text-gray-900 mb-4">
+          APPG Funding Analysis
+        </h1>
+        <p className="text-lg text-gray-600">
+          Comprehensive analysis of All-Party Parliamentary Group funding across multiple years.
+        </p>
       </div>
-    </div>
+
+      {/* APPG funding columns with ALL groups */}
+      <YearlyFundingColumns yearSummaries={yearSummariesWithAllGroups} />
+      
+      {/* Top Funders component with ALL funders */}
+      <TopFundersColumns yearSummaries={yearSummariesWithAllFunders} />
+    </main>
   );
 }

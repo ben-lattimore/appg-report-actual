@@ -122,7 +122,7 @@ function YearColumn({ year, groups }: YearColumnProps) {
 interface YearlyFundingColumnsProps {
   yearSummaries: Array<{
     year: number;
-    topGroups: GroupSummary[];
+    allGroups: GroupSummary[]; // Changed from topGroups to allGroups
   }>;
 }
 
@@ -133,7 +133,7 @@ export default function YearlyFundingColumns({ yearSummaries }: YearlyFundingCol
         <YearColumn
           key={yearData.year}
           year={yearData.year}
-          groups={yearData.topGroups}
+          groups={yearData.allGroups} // Changed from topGroups to allGroups
         />
       ))}
     </div>
