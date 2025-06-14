@@ -1,11 +1,9 @@
-import { AggregatedData } from '@/types/appg';
 import { getCachedAggregates } from '@/lib/data';
 import YearlyFundingColumns from '@/components/YearlyFundingColumns';
-import TopFundersColumns from '@/components/TopFundersColumns';
 import Navigation from '@/components/Navigation';
 import PageHeader from '@/components/PageHeader';
 
-export default async function Home() {
+export default async function APPGFundingPage() {
   const data = await getCachedAggregates();
 
   // Transform data to pass allGroups to YearlyFundingColumns
@@ -14,24 +12,16 @@ export default async function Home() {
     allGroups: year.allGroups
   }));
 
-  // Transform data to pass allFunders to TopFundersColumns  
-  const yearSummariesWithAllFunders = data.yearSummaries.map(year => ({
-    year: year.year,
-    topFunders: year.allFunders // Use allFunders instead of topFunders
-  }));
-
   return (
     <div className="min-h-screen">
       <Navigation />
       <PageHeader 
-        title="APPG Funding Analysis" 
-        description="Comprehensive analysis of All-Party Parliamentary Group funding across multiple years."
+        title="APPG Funding by Year" 
+        description="Explore the top All-Party Parliamentary Groups by funding amount across different years."
       />
       
       <main className="mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* APPG funding columns with ALL groups */}
         <YearlyFundingColumns yearSummaries={yearSummariesWithAllGroups} />
-        
       </main>
     </div>
   );

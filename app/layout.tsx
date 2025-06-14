@@ -1,5 +1,5 @@
-import '../styles/globals.css'
 import type { Metadata } from 'next'
+import '@/styles/globals.css'
 
 export const metadata: Metadata = {
   title: 'APPG Benefits Dashboard',
@@ -13,7 +13,7 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
-      <body>{children}</body>
+      <body className="bg-gray-50 min-h-screen">{children}</body>
     </html>
   )
 }
