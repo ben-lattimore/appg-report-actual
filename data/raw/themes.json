@@ -1,0 +1,82 @@
+{
+    "categories": [
+        {
+            "name": "Brexit and the EU",
+            "subcategories": [
+                "Brexit",
+                "The EU"
+            ]
+        },
+        {
+            "name": "Coronavirus",
+            "subcategories": [
+                "Coronavirus"
+            ]
+        },
+        {
+            "name": "Economy, business and transport",
+            "subcategories": [
+                "Business",
+                "Economy",
+                "Transport",
+                "Work and incomes",
+                "Monthly economic updates",
+                "Economic Indicators"
+            ]
+        },
+        {
+            "name": "Home affairs",
+            "subcategories": [
+                "Communities",
+                "Crime",
+                "Culture, media and sport",
+                "Family and civil law",
+                "Immigration",
+                "Justice",
+                "Security"
+            ]
+        },
+        {
+            "name": "Parliament and elections",
+            "subcategories": [
+                "Devolution",
+                "Elections",
+                "Government",
+                "Local government",
+                "Parliament"
+            ]
+        },
+        {
+            "name": "Science, climate and technology",
+            "subcategories": [
+                "Climate change",
+                "Energy",
+                "Environment",
+                "Sciences",
+                "Technology"
+            ]
+        },
+        {
+            "name": "Social policy",
+            "subcategories": [
+                "Education",
+                "Families and social services",
+                "Health",
+                "Housing and planning",
+                "Welfare and pensions"
+            ]
+        },
+        {
+            "name": "World Affairs",
+            "subcategories": [
+                "Africa",
+                "Americas",
+                "Asia",
+                "Europe",
+                "Middle East",
+                "Defence",
+                "Institutions"
+            ]
+        }
+    ]
+}
