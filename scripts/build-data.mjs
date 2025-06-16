@@ -154,6 +154,41 @@ export async function buildAggregates() {
     // Get top 10 groups for quick access
     const topGroups = allGroups.slice(0, 10);
     
+    // Add after existing aggregation logic
+    
+    // Process theme aggregations
+    const themeAggregations = new Map();
+    
+    for (const group of raw.appg_groups) {
+      if (group.categorization) {
+        for (const cat of group.categorization.categories) {
+          const key = `${cat.category}|${cat.subcategories.join(',')}`;
+          if (!themeAggregations.has(key)) {
+            themeAggregations.set(key, {
+              category: cat.category,
+              subcategories: cat.subcategories,
+              appgs: [],
+              totalBenefits: 0,
+              count: 0
+            });
+          }
+          
+          const themeData = themeAggregations.get(key);
+          themeData.appgs.push({
+            name: group.name,
+            title: group.title,
+            benefits: group.total_benefits
+          });
+          themeData.totalBenefits += group.total_benefits;
+          themeData.count++;
+        }
+      }
+    }
+    
+    // Add to aggregatedData
+    const themesSummary = Array.from(themeAggregations.values())
+      .sort((a, b) => b.totalBenefits - a.totalBenefits);
+    
     yearSummaries.push({
       year,
       totalGroups: raw.total_groups,

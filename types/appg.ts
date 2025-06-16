@@ -5,6 +5,18 @@ export interface RawBenefitDetail {
   calculated_value: number;
 }
 
+export interface ThemeCategory {
+  name: string;
+  subcategories: string[];
+}
+
+export interface APPGCategorization {
+  categories: {
+    category: string;
+    subcategories: string[];
+  }[];
+}
+
 export interface RawGroup {
   name: string;
   title: string;
@@ -12,6 +24,8 @@ export interface RawGroup {
   benefits_in_kind: number[];
   total_benefits: number;
   benefits_details: RawBenefitDetail[];
+  // Add categorization field
+  categorization?: APPGCategorization;
 }
 
 export interface RawYearFile {
