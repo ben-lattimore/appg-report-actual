@@ -36,8 +36,6 @@ export default async function Home() {
       />
       
       <main className="mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* NEW: Subcategory funding columns */}
-        <SubcategoryFundingColumns yearSummaries={yearSummariesWithSubcategories} />
         
         {/* APPG funding columns with ALL groups */}
         <YearlyFundingColumns yearSummaries={yearSummariesWithAllGroups} />
