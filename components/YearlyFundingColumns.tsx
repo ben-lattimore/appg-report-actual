@@ -80,7 +80,7 @@ function YearColumn({ year, groups }: YearColumnProps) {
                     {formatCurrency(group.total)}
                   </span>
                   <span className="text-xs text-gray-500">
-                    {group.benefitCount} benefit{group.benefitCount !== 1 ? 's' : ''}
+                    {group.benefitCount} funder{group.benefitCount !== 1 ? 's' : ''}
                   </span>
                 </div>
               </div>
