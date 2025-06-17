@@ -207,8 +207,8 @@ interface SubcategoryFundingColumnsProps {
 export default function SubcategoryFundingColumns({ yearSummaries }: SubcategoryFundingColumnsProps) {
   return (
     <div className="mb-12">
-      <h2 className="text-2xl font-bold text-gray-900 mb-6">Top Funded Subcategories by Year</h2>
-      
+      <h2 className="text-2xl font-bold text-gray-900">Top Funded Subcategories by Year</h2>
+      <p className="text-gray-600 mb-6">Click on each subcategory to see the APPGs within.</p>
       <div className="grid gap-6" style={{ gridTemplateColumns: `repeat(${yearSummaries.length}, 1fr)` }}>
         {yearSummaries.map(({ year, allSubcategories }) => (
           <SubcategoryColumn
