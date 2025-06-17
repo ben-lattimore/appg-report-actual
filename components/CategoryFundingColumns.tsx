@@ -41,7 +41,7 @@ export default function CategoryFundingColumns({ yearSummaries }: CategoryFundin
     <div className="mb-12">
       <h2 className="text-2xl font-bold text-gray-900 mb-6">Top Funded Categories by Year</h2>
       
-      <div className="grid gap-6" style={{ gridTemplateColumns: `repeat(${yearSummaries.length}, 1fr)` }}>
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-6">
         {yearSummaries.map(({ year, allSubcategories }) => {
           const categoryTotals = getCategoryTotals(allSubcategories);
           const topCategories = categoryTotals.slice(0, 10);
