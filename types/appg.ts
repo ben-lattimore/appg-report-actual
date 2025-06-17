@@ -64,6 +64,27 @@ export interface YearFunderSummary {
   topFunders: FunderSummary[];
 }
 
+// NEW: Subcategory funding interfaces
+export interface SubcategoryAPPG {
+  name: string;
+  title: string;
+  amount: number;
+}
+
+export interface SubcategorySummary {
+  name: string;
+  category: string;
+  totalAmount: number;
+  appgCount: number;
+  appgs: SubcategoryAPPG[];
+}
+
+export interface YearSubcategorySummary {
+  year: number;
+  topSubcategories: SubcategorySummary[];
+  allSubcategories: SubcategorySummary[];
+}
+
 export interface YearSummary {
   year: number;
   totalGroups: number;
@@ -71,7 +92,10 @@ export interface YearSummary {
   groupsWithBenefits: number;
   allGroups: GroupSummary[];
   averageBenefit: number;
-  allFunders: FunderSummary[]; // Add this line
+  allFunders: FunderSummary[];
+  // NEW: Add subcategory data
+  topSubcategories: SubcategorySummary[];
+  allSubcategories: SubcategorySummary[];
 }
 
 export interface GroupComparison {
@@ -89,7 +113,9 @@ export interface GroupComparison {
 export interface AggregatedData {
   yearSummaries: YearSummary[];
   groupComparisons: GroupComparison[];
-  yearFunderSummaries: YearFunderSummary[]; // Add this line
+  yearFunderSummaries: YearFunderSummary[];
+  // NEW: Add subcategory summaries
+  yearSubcategorySummaries: YearSubcategorySummary[];
   overallStats: {
     totalYears: number;
     totalValue: number;

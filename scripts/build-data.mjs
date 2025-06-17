@@ -41,11 +41,12 @@ export async function buildAggregates() {
   await fs.mkdir(CACHE_DIR, { recursive: true });
   
   const files = await fs.readdir(RAW_DIR);
-  const jsonFiles = files.filter(f => f.endsWith('.json')).sort();
+  const jsonFiles = files.filter(f => f.endsWith('.json') && f !== 'themes.json').sort();
   
   const yearSummaries = [];
   const groupMap = new Map();
   const yearFunderSummaries = [];
+  const yearSubcategorySummaries = []; // NEW: Add subcategory summaries
   
   for (const file of jsonFiles) {
     const filePath = path.join(RAW_DIR, file);
@@ -69,6 +70,9 @@ export async function buildAggregates() {
     // Process funders for this year
     const funderMap = new Map();
     
+    // NEW: Process subcategories for this year
+    const subcategoryMap = new Map();
+    
     for (const group of raw.appg_groups) {
       // Round benefits_in_kind values
       if (group.benefits_in_kind && Array.isArray(group.benefits_in_kind)) {
@@ -78,6 +82,32 @@ export async function buildAggregates() {
       // Round total_benefits (this becomes the 'total' field in the output)
       if (typeof group.total_benefits === 'number') {
         group.total_benefits = roundToNearest1500(group.total_benefits);
+      }
+      
+      // NEW: Process subcategories
+      if (group.categorization && group.total_benefits > 0) {
+        for (const cat of group.categorization.categories) {
+          for (const subcategory of cat.subcategories) {
+            if (!subcategoryMap.has(subcategory)) {
+              subcategoryMap.set(subcategory, {
+                name: subcategory,
+                category: cat.category,
+                totalAmount: 0,
+                appgCount: 0,
+                appgs: []
+              });
+            }
+            
+            const subcategorySummary = subcategoryMap.get(subcategory);
+            subcategorySummary.totalAmount += group.total_benefits;
+            subcategorySummary.appgCount++;
+            subcategorySummary.appgs.push({
+              name: group.name,
+              title: group.title,
+              amount: group.total_benefits
+            });
+          }
+        }
       }
       
       for (const benefit of group.benefits_details) {
@@ -137,6 +167,22 @@ export async function buildAggregates() {
       allFunders // Include ALL funders
     });
     
+    // NEW: Sort subcategories by total amount
+    const allSubcategories = Array.from(subcategoryMap.values())
+      .sort((a, b) => b.totalAmount - a.totalAmount)
+      .map(subcategory => ({
+        ...subcategory,
+        appgs: subcategory.appgs.sort((a, b) => b.amount - a.amount)
+      }));
+    
+    const topSubcategories = allSubcategories.slice(0, 10);
+    
+    yearSubcategorySummaries.push({
+      year,
+      topSubcategories,
+      allSubcategories
+    });
+    
     // Calculate year summary
     const groupsWithBenefits = raw.appg_groups.filter(g => g.total_benefits > 0).length;
     const averageBenefit = groupsWithBenefits > 0 ? raw.total_benefits_value / groupsWithBenefits : 0;
@@ -154,41 +200,6 @@ export async function buildAggregates() {
     // Get top 10 groups for quick access
     const topGroups = allGroups.slice(0, 10);
     
-    // Add after existing aggregation logic
-    
-    // Process theme aggregations
-    const themeAggregations = new Map();
-    
-    for (const group of raw.appg_groups) {
-      if (group.categorization) {
-        for (const cat of group.categorization.categories) {
-          const key = `${cat.category}|${cat.subcategories.join(',')}`;
-          if (!themeAggregations.has(key)) {
-            themeAggregations.set(key, {
-              category: cat.category,
-              subcategories: cat.subcategories,
-              appgs: [],
-              totalBenefits: 0,
-              count: 0
-            });
-          }
-          
-          const themeData = themeAggregations.get(key);
-          themeData.appgs.push({
-            name: group.name,
-            title: group.title,
-            benefits: group.total_benefits
-          });
-          themeData.totalBenefits += group.total_benefits;
-          themeData.count++;
-        }
-      }
-    }
-    
-    // Add to aggregatedData
-    const themesSummary = Array.from(themeAggregations.values())
-      .sort((a, b) => b.totalBenefits - a.totalBenefits);
-    
     yearSummaries.push({
       year,
       totalGroups: raw.total_groups,
@@ -198,7 +209,9 @@ export async function buildAggregates() {
       topGroups,
       allGroups, // Include ALL groups
       topFunders, // Add top 10 funder data to year summary
-      allFunders // Add ALL funder data to year summary
+      allFunders, // Add ALL funder data to year summary
+      topSubcategories, // NEW: Add top subcategories
+      allSubcategories // NEW: Add all subcategories
     });
     
     // Process groups for cross-year analysis
@@ -222,7 +235,8 @@ export async function buildAggregates() {
   const aggregatedData = {
     yearSummaries: yearSummaries.sort((a, b) => a.year - b.year),
     groups: Array.from(groupMap.values()),
-    yearFunderSummaries: yearFunderSummaries.sort((a, b) => a.year - b.year)
+    yearFunderSummaries: yearFunderSummaries.sort((a, b) => a.year - b.year),
+    yearSubcategorySummaries: yearSubcategorySummaries.sort((a, b) => a.year - b.year) // NEW
   };
   
   await fs.writeFile(OUT, JSON.stringify(aggregatedData, null, 2));

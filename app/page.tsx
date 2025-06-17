@@ -2,6 +2,7 @@ import { AggregatedData } from '@/types/appg';
 import { getCachedAggregates } from '@/lib/data';
 import YearlyFundingColumns from '@/components/YearlyFundingColumns';
 import TopFundersColumns from '@/components/TopFundersColumns';
+import SubcategoryFundingColumns from '@/components/SubcategoryFundingColumns';
 import Navigation from '@/components/Navigation';
 import PageHeader from '@/components/PageHeader';
 
@@ -20,6 +21,12 @@ export default async function Home() {
     topFunders: year.allFunders // Use allFunders instead of topFunders
   }));
 
+  // NEW: Transform data to pass subcategories to SubcategoryFundingColumns
+  const yearSummariesWithSubcategories = data.yearSummaries.map(year => ({
+    year: year.year,
+    allSubcategories: year.allSubcategories || []
+  }));
+
   return (
     <div className="min-h-screen">
       <Navigation />
@@ -29,6 +36,9 @@ export default async function Home() {
       />
       
       <main className="mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* NEW: Subcategory funding columns */}
+        <SubcategoryFundingColumns yearSummaries={yearSummariesWithSubcategories} />
+        
         {/* APPG funding columns with ALL groups */}
         <YearlyFundingColumns yearSummaries={yearSummariesWithAllGroups} />
         
